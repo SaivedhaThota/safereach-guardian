@@ -1,10 +1,25 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { getContacts, addContact, deleteContact, type Contact } from "@/lib/api";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Trash2, UserPlus, Phone } from "lucide-react";
 import { toast } from "sonner";
+
+const STORAGE_KEY = "safeher_contacts";
+
+function saveToStorage(contacts: Contact[]) {
+  localStorage.setItem(STORAGE_KEY, JSON.stringify(contacts));
+}
+
+function loadFromStorage(): Contact[] {
+  try {
+    const data = localStorage.getItem(STORAGE_KEY);
+    return data ? JSON.parse(data) : [];
+  } catch {
+    return [];
+  }
+}
 
 export function EmergencyContacts() {
   const [name, setName] = useState("");
@@ -14,7 +29,13 @@ export function EmergencyContacts() {
   const { data: contacts = [], isLoading } = useQuery({
     queryKey: ["contacts"],
     queryFn: getContacts,
+    initialData: loadFromStorage,
   });
+
+  // Persist to localStorage whenever contacts change
+  useEffect(() => {
+    if (contacts.length > 0) saveToStorage(contacts);
+  }, [contacts]);
 
   const addMutation = useMutation({
     mutationFn: () => addContact(name, phone),
@@ -73,10 +94,11 @@ export function EmergencyContacts() {
         <p className="text-muted-foreground text-center py-8">No emergency contacts yet. Add your trusted contacts above.</p>
       ) : (
         <div className="space-y-2">
-          {contacts.map((c: Contact) => (
+          {contacts.map((c: Contact, i: number) => (
             <div
               key={c.id}
-              className="flex items-center justify-between p-4 rounded-xl bg-card border border-border"
+              className="flex items-center justify-between p-4 rounded-xl bg-card border border-border animate-fade-in"
+              style={{ animationDelay: `${i * 60}ms` }}
             >
               <div className="flex items-center gap-3">
                 <div className="w-10 h-10 rounded-full bg-secondary flex items-center justify-center">
