@@ -15,7 +15,7 @@ export interface SosAlert {
   created_at: string;
 }
 
-export const USER_ID = 1;
+export const USER_ID = 2;
 
 export async function sendSosAlert(latitude: number, longitude: number): Promise<SosAlert> {
   const res = await fetch(`${BASE_URL}/sos_alerts`, {
