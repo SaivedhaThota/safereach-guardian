@@ -6,7 +6,7 @@ import { FakeCall } from "@/components/FakeCall";
 import { SirenAlert } from "@/components/SirenAlert";
 import { useShakeDetection } from "@/hooks/useShakeDetection";
 import { useVoiceCommand } from "@/hooks/useVoiceCommand";
-import { sendSosAlert, getLocationLink } from "@/lib/api";
+import { sendSosAlert, getContacts, notifyContacts } from "@/lib/api";
 import { toast } from "sonner";
 import { Mic, MicOff, Smartphone, Users, History, Wrench } from "lucide-react";
 import { useQueryClient } from "@tanstack/react-query";
@@ -19,10 +19,17 @@ const Index = () => {
       const pos = await new Promise<GeolocationPosition>((resolve, reject) =>
         navigator.geolocation.getCurrentPosition(resolve, reject, { enableHighAccuracy: true })
       );
-      await sendSosAlert(pos.coords.latitude, pos.coords.longitude);
-      const link = getLocationLink(pos.coords.latitude, pos.coords.longitude);
-      toast.success("SOS alert sent!", { description: link, duration: 5000 });
+      const alert = await sendSosAlert(pos.coords.latitude, pos.coords.longitude);
+      const contacts = await getContacts();
+      if (contacts.length > 0) {
+        notifyContacts(contacts, pos.coords.latitude, pos.coords.longitude);
+      }
       queryClient.invalidateQueries({ queryKey: ["sos_alerts"] });
+      const nearbyCount = alert.nearbyUsers?.length || 0;
+      toast.success("SOS Alert Sent Successfully", {
+        description: `${nearbyCount} nearby users notified · ${contacts.length} emergency contacts alerted`,
+        duration: 6000,
+      });
     } catch {
       toast.error("Failed to send SOS alert");
     }
