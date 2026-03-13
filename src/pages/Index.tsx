@@ -8,7 +8,8 @@ import { useShakeDetection } from "@/hooks/useShakeDetection";
 import { useVoiceCommand } from "@/hooks/useVoiceCommand";
 import { sendSosAlert, getContacts, notifyContacts } from "@/lib/api";
 import { toast } from "sonner";
-import { Mic, MicOff, Smartphone, Users, History, Wrench } from "lucide-react";
+import { Mic, MicOff, Smartphone, Users, History, Wrench, Radar } from "lucide-react";
+import { LiveLocationMap } from "@/components/LiveLocationMap";
 import { useQueryClient } from "@tanstack/react-query";
 
 const Index = () => {
