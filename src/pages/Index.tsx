@@ -70,6 +70,18 @@ const Index = () => {
         </div>
       </section>
 
+      {/* Nearby Alert System */}
+      <section>
+        <div className="flex items-center gap-2 mb-4">
+          <Radar className="w-5 h-5 text-primary" />
+          <h2 className="text-xl font-heading font-bold">Nearby Alert System</h2>
+        </div>
+        <p className="text-muted-foreground text-sm mb-4">
+          Live location · 500m alert radius
+        </p>
+        <LiveLocationMap />
+      </section>
+
       {/* Emergency Contacts */}
       <section>
         <div className="flex items-center gap-2 mb-4">
