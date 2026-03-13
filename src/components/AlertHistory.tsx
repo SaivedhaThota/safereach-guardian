@@ -20,7 +20,7 @@ export function AlertHistory() {
   return (
     <div className="space-y-3">
       {alerts.map((alert: SosAlert, i: number) => {
-        const date = new Date(alert.timestamp || alert.created_at);
+        const date = new Date(alert.timestamp);
         const mapLink = getLocationLink(alert.latitude, alert.longitude);
         return (
           <div
